@@ -147,9 +147,12 @@ for offer in offers:
 
         image_name = f"./cian_images/{image_link.split('/')[-1]}"
 
-        urllib.request.urlretrieve(image_link, image_name)
-        data = utils.get_image_vector(380, image_name)
-        data_images += [data]
+        try:
+            urllib.request.urlretrieve(image_link, image_name)
+            data = utils.get_image_vector(380, image_name)
+            data_images += [data]
+        except:
+            pass
 
     # предсказываем класс изображения
     preds = model.predict(np.array(data_images))
