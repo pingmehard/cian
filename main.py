@@ -62,7 +62,11 @@ def proceed_flats():
     model_path = r"./saved_models/model_v3/"
     model = load_model(model_path)
 
-    driver = webdriver.Chrome(".\webdriver\chromedriver")
+    options = webdriver.ChromeOptions()
+    options.add_argument('--ignore-ssl-errors=yes')
+    options.add_argument('--ignore-certificate-errors')
+
+    driver = webdriver.Chrome("./webdriver/chromedriver")
 
     # загружаем ссылки на дамп офферов из циан
     offers_load_status = False
@@ -189,3 +193,6 @@ def proceed_flats():
             time.sleep(60)
 
         time.sleep(.5)
+
+if __name__ == '__main__':
+    proceed_flats()
