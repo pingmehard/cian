@@ -21,12 +21,7 @@ import numpy as np
 
 import utils
 
-import telebot
-from creds import token
 
-
-
-bot = telebot.TeleBot(token)
 
 dict_convert = {
         0 : "remont edition",
@@ -192,18 +187,7 @@ def proceed_flats():
         with open('./data/offers.pickle', 'wb') as f:
             pickle.dump(offers, f, protocol=pickle.HIGHEST_PROTOCOL)
 
-    # Создаем сообщение для телеграм бота
-    # bot.send_message(chat_id = "@cian_news", text = "Хей, хорошие хаты подъехали {datetime.datetime.now()}")
-    # bot.send_message(chat_id = "@cian_news", text = f"Найдено всего {dict(Counter([i['Result'] for i in offers]))}")
 
-    # for text in [cian_link + i['Link'] + '\n' for i in offers if i['Result'] == dict_convert[2]]:
-
-    #     try:
-    #         res = bot.send_message(chat_id = "@cian_news", text = text)
-    #     except:
-    #         time.sleep(60)
-
-    #     time.sleep(.5)
 
 if __name__ == '__main__':
     proceed_flats()
