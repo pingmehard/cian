@@ -48,9 +48,16 @@ def show_raw_flats(message):
 
     global offers
 
-    filtered_offers = filter(lambda x: datetime.datetime.today().strftime('%Y-%m-%d') == x['LoadDate'], offers)
+    filtered_offers = filter(lambda x: x['ViewedInBot'] == 0, offers)
     modified_links = [cian_link + i['Link'] + '\n' for i in filtered_offers if i['Result'] == dict_convert[0]]
     send_links_with_timeout(modified_links)
+
+    # Проставляем статус просмотра квартир
+    for i in offers:
+        i['ViewedInBot'] = 1
+
+    with open('./data/specified_offers.pickle', 'wb') as f:
+        pickle.dump(offers, f, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 @bot.message_handler(commands=["show_specified"])
@@ -58,9 +65,16 @@ def show_specified_flats(message):
 
     global specified_offers
 
-    filtered_offers = filter(lambda x: datetime.datetime.today().strftime('%Y-%m-%d') == x['LoadDate'], specified_offers)
+    filtered_offers = filter(lambda x: x['ViewedInBot'] == 0, specified_offers)
     modified_links = [cian_link + i['Link'] + '\n' for i in filtered_offers]
     send_links_with_timeout(modified_links)
+
+    # Проставляем статус просмотра квартир
+    for i in specified_offers:
+        i['ViewedInBot'] = 1
+
+    with open('./data/specified_offers.pickle', 'wb') as f:
+        pickle.dump(offers, f, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 @bot.message_handler(commands=["show_cool"])
@@ -68,19 +82,26 @@ def show_specified_flats(message):
 
     global offers
 
-    filtered_offers = filter(lambda x: datetime.datetime.today().strftime('%Y-%m-%d') == x['LoadDate'], offers)
+    filtered_offers = filter(lambda x: x['ViewedInBot'] == 0, offers)
     modified_links = [cian_link + i['Link'] + '\n' for i in filtered_offers if i['Result'] == dict_convert[2]]
     send_links_with_timeout(modified_links)
 
+    # Проставляем статус просмотра квартир
+    for i in offers:
+        i['ViewedInBot'] = 1
+
+    with open('./data/specified_offers.pickle', 'wb') as f:
+        pickle.dump(offers, f, protocol=pickle.HIGHEST_PROTOCOL)
+
 
 def scheduler():
-    while True: 
+    while True:
         offers_quantity = main.proceed_flats()
         bot.send_message("@cian_news", text = f"Загружено {offers_quantity}. Выгрузить новые квартиры можно командой /show_specified")
         time.sleep(24 * 60 * 60)
 
 def scheduler_specified():
-     while True: 
+    while True:
         offers_quantity = specified_main.proceed_specified_flats()
         bot.send_message("@cian_news", text = f"Загружено {offers_quantity}. Выгрузить новые квартиры можно командой /show_specified")
         time.sleep(60 * 60)
