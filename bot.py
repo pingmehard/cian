@@ -97,7 +97,7 @@ def show_specified_flats(message):
 def scheduler():
     while True:
         offers_quantity = main.proceed_flats()
-        bot.send_message("@cian_news", text = f"Загружено {offers_quantity}. Выгрузить новые квартиры можно командой /show_specified")
+        bot.send_message("@cian_news", text = f"Загружено {offers_quantity}. Выгрузить новые квартиры можно командой /show_raw или /show_cool")
         time.sleep(24 * 60 * 60)
 
 def scheduler_specified():
