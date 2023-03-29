@@ -75,12 +75,14 @@ def show_specified_flats(message):
 
 def scheduler():
     while True: 
-        main.proceed_flats()
+        offers_quantity = main.proceed_flats()
+        bot.send_message("@cian_news", text = f"Загружено {offers_quantity}. Выгрузить новые квартиры можно командой /show_specified")
         time.sleep(24 * 60 * 60)
 
 def scheduler_specified():
      while True: 
-        specified_main.proceed_specified_flats()
+        offers_quantity = specified_main.proceed_specified_flats()
+        bot.send_message("@cian_news", text = f"Загружено {offers_quantity}. Выгрузить новые квартиры можно командой /show_specified")
         time.sleep(60 * 60)
 
 thread1 = Thread(target=bot.infinity_polling)

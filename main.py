@@ -1,6 +1,4 @@
-import os
 import urllib.request
-import random
 import time
 import pickle
 import datetime
@@ -12,8 +10,6 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 
 from bs4 import BeautifulSoup as BS
-
-from PIL import Image
 
 from tensorflow.keras.models import load_model
 
@@ -144,9 +140,6 @@ def proceed_flats():
 
     driver.close()
 
-    if len(offers) > 0:
-        bot.send_message(chat_id = "@cian_news", text = f'Найдено {len(offers)} новых квартир на проверку, можно отобразить их командой /show_cool или /show_raw')
-
     # загружаем все изображения по ссылкам и добавляем вектора от модели
     for offer in offers:
 
@@ -187,7 +180,7 @@ def proceed_flats():
         with open('./data/offers.pickle', 'wb') as f:
             pickle.dump(offers, f, protocol=pickle.HIGHEST_PROTOCOL)
 
-
+    return len(offers)
 
 if __name__ == '__main__':
     proceed_flats()

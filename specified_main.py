@@ -153,5 +153,7 @@ def proceed_specified_flats(main_link = None):
         with open('./data/specified_offers.pickle', 'wb') as f:
             pickle.dump(offers, f, protocol=pickle.HIGHEST_PROTOCOL)
 
+    return len(offers)
+
 if __name__ == '__main__':
     proceed_specified_flats()
