@@ -17,12 +17,7 @@ import numpy as np
 
 import utils
 
-import telebot
-from creds import token
 
-
-
-bot = telebot.TeleBot(token)
 
 dict_convert = {
         0 : "remont edition",
@@ -30,6 +25,7 @@ dict_convert = {
         2 : "babka edition",
         3 : "ebat` berem"
     }
+
 
 
 def proceed_specified_flats(main_link = None):
@@ -129,9 +125,6 @@ def proceed_specified_flats(main_link = None):
         offers += [offer]
 
     driver.close()
-
-    if len(offers) > 0:
-        bot.send_message(chat_id = "@cian_news", text = f'Найдено {len(offers)} новых квартир на проверку, можно отобразить их командой /show_specified')
 
     # загружаем все изображения по ссылкам и добавляем вектора от модели
     for offer in offers:
