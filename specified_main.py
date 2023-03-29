@@ -13,10 +13,6 @@ from selenium.webdriver.common.keys import Keys
 
 from bs4 import BeautifulSoup as BS
 
-from PIL import Image
-
-from tensorflow.keras.models import load_model
-
 import numpy as np
 
 import utils
@@ -35,43 +31,22 @@ dict_convert = {
         3 : "ebat` berem"
     }
 
-def make_conclusion(preds_vector):
 
-    '''
-    Выводим предсказанный класс квартиры
-    '''
+def proceed_specified_flats(main_link = None):
 
     global dict_convert
 
-    preds = [np.argmax(i) for i in preds_vector]
-
-    count_preds = Counter(preds)
-
-    max_index = max(count_preds.items(), key = lambda x: x[1])
-
-    if count_preds[0] > 3:
-        return dict_convert[0]
-
-    return dict_convert[max_index[0]]
-
-
-def proceed_flats():
-
-    global dict_convert
+    if main_link is None:
+        main_link = "https://www.cian.ru/map/?center=55.78112449451966%2C37.469336427748175&deal_type=sale&engine_version=2&in_polygon[0]=37.4704786_55.7820336%2C37.4702747_55.7820578%2C37.4700816_55.782079%2C37.4699475_55.7820971%2C37.4697007_55.7821243%2C37.4695184_55.7821425%2C37.4693681_55.7821576%2C37.469234_55.7821667%2C37.4690516_55.7821818%2C37.4689068_55.7821999%2C37.4687781_55.7822271%2C37.4686493_55.7822513%2C37.4685152_55.7822453%2C37.4684884_55.7821636%2C37.4684508_55.782073%2C37.4684347_55.7820004%2C37.4683918_55.7819067%2C37.4683435_55.7818371%2C37.4682953_55.7817585%2C37.468247_55.7816739%2C37.4682094_55.7815983%2C37.4681504_55.7815167%2C37.4681129_55.7814441%2C37.4680378_55.7813686%2C37.4679788_55.781296%2C37.4679466_55.7812144%2C37.4679412_55.7811237%2C37.4679251_55.7810149%2C37.4679037_55.7809362%2C37.4678715_55.7808425%2C37.4678447_55.7807579%2C37.4678232_55.7806702%2C37.4678017_55.7805765%2C37.4677856_55.7804949%2C37.4677535_55.7804193%2C37.467732_55.7803467%2C37.4678125_55.7802863%2C37.4679949_55.7802591%2C37.4681236_55.7802409%2C37.4682738_55.7802198%2C37.4684133_55.7802077%2C37.4685474_55.7802016%2C37.4686761_55.7801986%2C37.468821_55.7801895%2C37.4693842_55.7801805%2C37.4694433_55.780256%2C37.4694969_55.7803286%2C37.4695452_55.7803981%2C37.4696042_55.7804798%2C37.4696525_55.7805493%2C37.4696846_55.7806218%2C37.4697115_55.7806974%2C37.4697383_55.780773%2C37.4697651_55.7808546%2C37.4697973_55.7809393%2C37.4698188_55.7810209%2C37.4698724_55.7810995%2C37.469926_55.7811841%2C37.4699743_55.7812567%2C37.470028_55.7813383%2C37.470087_55.7814139%2C37.4701406_55.7815046%2C37.4701728_55.7815772%2C37.4702265_55.7816618%2C37.4702747_55.7817465%2C37.470323_55.781819%2C37.4703713_55.7818885%2C37.4704142_55.7819641%2C37.4704518_55.7820397%2C37.4704786_55.7820336&offer_type=flat&polygon_name[0]=%D0%9E%D0%B1%D0%BB%D0%B0%D1%81%D1%82%D1%8C%20%D0%BF%D0%BE%D0%B8%D1%81%D0%BA%D0%B0&wp=1&zoom=18"
     # основная ссылка с параметрами поиска
-    main_link = "https://www.cian.ru/map/?center=55.75574535024552%2C37.54378439999995&currency=2&deal_type=sale&engine_version=2&object_type[0]=1&in_polygon[0]=37.4074853_55.8688097%2C37.3985589_55.8606737%2C37.3930657_55.8517629%2C37.3930657_55.8420772%2C37.3930657_55.8323915%2C37.3916924_55.8230932%2C37.3903191_55.813795%2C37.3868859_55.8044967%2C37.3820794_55.7955859%2C37.3745263_55.7870625%2C37.3683465_55.7781517%2C37.3690331_55.7688534%2C37.3683465_55.7595552%2C37.3683465_55.7498695%2C37.3710931_55.7405712%2C37.3745263_55.7304981%2C37.3779595_55.7208124%2C37.384826_55.712289%2C37.3964989_55.7057028%2C37.4033654_55.6967919%2C37.4102319_55.6882685%2C37.4150384_55.6789703%2C37.4219048_55.6704469%2C37.4287713_55.6619235%2C37.439071_55.6545624%2C37.4459374_55.6456515%2C37.4569238_55.6386778%2C37.4672234_55.6313167%2C37.4747765_55.6227933%2C37.4823296_55.6142699%2C37.4988091_55.6138825%2C37.5091088_55.6212436%2C37.5159753_55.629767%2C37.5214684_55.6386778%2C37.5297082_55.6468138%2C37.5413811_55.6534001%2C37.5564873_55.6491384%2C37.5722802_55.6456515%2C37.5873864_55.6413898%2C37.6038659_55.6402276%2C37.6203454_55.6413898%2C37.6203454_55.6510755%2C37.621032_55.6603738%2C37.6361382_55.6646355%2C37.6526177_55.6657978%2C37.6677239_55.669672%2C37.6835168_55.672384%2C37.6993096_55.6754834%2C37.7109826_55.6820697%2C37.7041161_55.6905931%2C37.6883233_55.6936925%2C37.6732171_55.6979542%2C37.6663506_55.7064776%2C37.6780236_55.7130639%2C37.6917565_55.7184879%2C37.7068627_55.7227496%2C37.7013696_55.7316604%2C37.6972497_55.7409587%2C37.6958764_55.7502569%2C37.6848901_55.7572306%2C37.6876366_55.7665289%2C37.6958764_55.7746648%2C37.698623_55.7839631%2C37.6993096_55.7932613%2C37.7137292_55.7979105%2C37.7192223_55.8068213%2C37.7089227_55.8141824%2C37.6945031_55.8188315%2C37.6780236_55.8184441%2C37.6629174_55.8223184%2C37.6498711_55.8281298%2C37.6587975_55.8362658%2C37.6670373_55.8444017%2C37.6622308_55.8533126%2C37.663604_55.8626108%2C37.6663506_55.8719091%2C37.6684106_55.8812073%2C37.6690972_55.8905056%2C37.6533044_55.8932176%2C37.6368249_55.8947673%2C37.6203454_55.896317%2C37.6038659_55.8970919%2C37.5873864_55.8967044%2C37.5709069_55.8951547%2C37.5537408_55.8951547%2C37.5372613_55.8947673%2C37.5200951_55.8947673%2C37.5036156_55.8920553%2C37.4878228_55.888181%2C37.47203_55.8843068%2C37.4562371_55.8815948%2C37.4397576_55.8788828%2C37.4246514_55.8750085%2C37.4116051_55.8688097%2C37.4074853_55.8688097&maxprice=28000000&min_house_year=2005&minfloor=10&mintarea=50&offer_type=flat&only_flat=1&polygon_name[0]=%D0%9E%D0%B1%D0%BB%D0%B0%D1%81%D1%82%D1%8C%20%D0%BF%D0%BE%D0%B8%D1%81%D0%BA%D0%B0&totime=-2&wp=1&zoom=11"
     cian_link = "https://www.cian.ru/"
-
-    # загружаем обученную модель для предсказания класса изображений
-    model_path = r"./saved_models/model_v3/"
-    model = load_model(model_path)
 
     options = webdriver.ChromeOptions()
     options.add_argument('--ignore-ssl-errors=yes')
     options.add_argument('--ignore-certificate-errors')
     options.add_argument("no-sandbox")
     options.add_argument("--disable-gpu")
-    options.add_argument("--window-size=800,600")
+    options.add_argument("--window-size=600,1000")
     options.add_argument("--disable-dev-shm-usage")
 
     driver = webdriver.Chrome("./webdriver/chromedriver", options=options)
@@ -81,7 +56,7 @@ def proceed_flats():
 
     try:
         # open a file for binary writing
-        with open('./data/offers.pickle', 'rb') as f:
+        with open('./data/specified_offers.pickle', 'rb') as f:
             # dump the data to the file
             backup_offers = pickle.load(f)
             offers_load_status = True
@@ -127,10 +102,16 @@ def proceed_flats():
 
     for i in all_cards:
 
+        if "Льготная ипотека и специальные" in i.text:
+            continue
+
         offer = {}
 
         # записываем атрибуты оффера из списка на циан
-        offer["Price"] = i.find('div', attrs={"data-name":"OfferHeader"}).text
+        try:
+            offer["Price"] = i.find('div', attrs={"data-name":"OfferHeader"}).text
+        except:
+            offer["Price"] = "-"
         offer['Link'] = i.find('a')['href']
 
         # проверяем загружалась ли эта квартира уже в бэкап
@@ -150,7 +131,7 @@ def proceed_flats():
     driver.close()
 
     if len(offers) > 0:
-        bot.send_message(chat_id = "@cian_news", text = f'Найдено {len(offers)} новых квартир на проверку, можно отобразить их командой /show_cool или /show_raw')
+        bot.send_message(chat_id = "@cian_news", text = f'Найдено {len(offers)} новых квартир на проверку, можно отобразить их командой /show_specified')
 
     # загружаем все изображения по ссылкам и добавляем вектора от модели
     for offer in offers:
@@ -169,14 +150,6 @@ def proceed_flats():
             except:
                 pass
 
-        # предсказываем класс изображения
-        preds = model.predict(np.array(data_images))
-        # сохраняем предсказанный класс в атрибуты изображения
-        offer['Predicts'] = preds
-
-        # создаем итоговый вектор с предсказанной бизнес-категорией
-        offer['Result'] = make_conclusion(offer['Predicts'])
-
         # для бота создаем атрибут даты, чтобы иметь возможность 
         # выгружать последние определенные квартиры с определенным результатом
         offer['LoadDate'] = datetime.datetime.today().strftime('%Y-%m-%d')
@@ -185,25 +158,12 @@ def proceed_flats():
     # если бэкап уже был, то добавляем к бэкапу новые загруженные квартиры
     if offers_load_status:
         backup_offers += offers
-        with open('./data/offers.pickle', 'wb') as f:
+        with open('./data/specified_offers.pickle', 'wb') as f:
             pickle.dump(backup_offers, f, protocol=pickle.HIGHEST_PROTOCOL)
     else:
         # иначе сохраняем первые офферы квартир
-        with open('./data/offers.pickle', 'wb') as f:
+        with open('./data/specified_offers.pickle', 'wb') as f:
             pickle.dump(offers, f, protocol=pickle.HIGHEST_PROTOCOL)
 
-    # Создаем сообщение для телеграм бота
-    # bot.send_message(chat_id = "@cian_news", text = "Хей, хорошие хаты подъехали {datetime.datetime.now()}")
-    # bot.send_message(chat_id = "@cian_news", text = f"Найдено всего {dict(Counter([i['Result'] for i in offers]))}")
-
-    # for text in [cian_link + i['Link'] + '\n' for i in offers if i['Result'] == dict_convert[2]]:
-
-    #     try:
-    #         res = bot.send_message(chat_id = "@cian_news", text = text)
-    #     except:
-    #         time.sleep(60)
-
-    #     time.sleep(.5)
-
 if __name__ == '__main__':
-    proceed_flats()
+    proceed_specified_flats()
