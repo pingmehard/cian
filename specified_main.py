@@ -1,10 +1,7 @@
-import os
 import urllib.request
-import random
 import time
 import pickle
 import datetime
-from collections import Counter
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -12,8 +9,6 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 
 from bs4 import BeautifulSoup as BS
-
-import numpy as np
 
 import utils
 
