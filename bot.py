@@ -20,15 +20,6 @@ cian_link = "https://www.cian.ru/"
 
 bot = telebot.TeleBot(token)
 
-with open('./data/offers.pickle', 'rb') as f:
-    # dump the data to the file
-    offers = pickle.load(f)
-
-with open('./data/specified_offers.pickle', 'rb') as f:
-    # dump the data to the file
-    specified_offers = pickle.load(f)
-
-
 
 def send_message_bot(text):
     bot.send_message(chat_id = "@cian_news", text = text)
@@ -46,7 +37,9 @@ def send_links_with_timeout(iter_object):
 @bot.message_handler(commands=["show_raw"])
 def show_raw_flats(message):
 
-    global offers
+    with open('./data/offers.pickle', 'rb') as f:
+        # dump the data to the file
+        offers = pickle.load(f)
 
     filtered_offers = filter(lambda x: x['ViewedInBot'] == 0, offers)
     modified_links = [cian_link + i['Link'] + '\n' for i in filtered_offers if i['Result'] == dict_convert[0]]
@@ -54,16 +47,19 @@ def show_raw_flats(message):
 
     # Проставляем статус просмотра квартир
     for i in offers:
-        i['ViewedInBot'] = 1
+        if i['Result'] == dict_convert[0]:
+            i['ViewedInBot'] = 1
 
-    with open('./data/specified_offers.pickle', 'wb') as f:
+    with open('./data/offers.pickle', 'wb') as f:
         pickle.dump(offers, f, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 @bot.message_handler(commands=["show_specified"])
 def show_specified_flats(message):
 
-    global specified_offers
+    with open('./data/specified_offers.pickle', 'rb') as f:
+        # dump the data to the file
+        specified_offers = pickle.load(f)
 
     filtered_offers = filter(lambda x: x['ViewedInBot'] == 0, specified_offers)
     modified_links = [cian_link + i['Link'] + '\n' for i in filtered_offers]
@@ -74,13 +70,15 @@ def show_specified_flats(message):
         i['ViewedInBot'] = 1
 
     with open('./data/specified_offers.pickle', 'wb') as f:
-        pickle.dump(offers, f, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(specified_offers, f, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 @bot.message_handler(commands=["show_cool"])
 def show_specified_flats(message):
 
-    global offers
+    with open('./data/offers.pickle', 'rb') as f:
+        # dump the data to the file
+        offers = pickle.load(f)
 
     filtered_offers = filter(lambda x: x['ViewedInBot'] == 0, offers)
     modified_links = [cian_link + i['Link'] + '\n' for i in filtered_offers if i['Result'] == dict_convert[2]]
@@ -90,7 +88,7 @@ def show_specified_flats(message):
     for i in offers:
         i['ViewedInBot'] = 1
 
-    with open('./data/specified_offers.pickle', 'wb') as f:
+    with open('./data/offers.pickle', 'wb') as f:
         pickle.dump(offers, f, protocol=pickle.HIGHEST_PROTOCOL)
 
 
