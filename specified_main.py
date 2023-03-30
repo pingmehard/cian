@@ -40,7 +40,12 @@ def proceed_specified_flats(main_link = None):
     options.add_argument("--window-size=600,1000")
     options.add_argument("--disable-dev-shm-usage")
 
-    driver = webdriver.Chrome("./webdriver/chromedriver", options=options)
+    driver = webdriver.Remote(
+        command_executor="http://127.0.0.1:4444/wd/hub",
+        options=options
+   )
+
+    # driver = webdriver.Chrome("./webdriver/chromedriver", options=options)
 
     # загружаем ссылки на дамп офферов из циан
     offers_load_status = False
