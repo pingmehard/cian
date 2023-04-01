@@ -1,0 +1,21 @@
+version: '3'
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - selenium
+    networks:
+      - selenium-network
+
+  selenium:
+    image: selenium/standalone-chrome:3.141.59-20210607
+    ports:
+      - "4444:4444"
+    networks:
+      - selenium-network
+      
+networks:
+  selenium-network:
+    driver: bridge

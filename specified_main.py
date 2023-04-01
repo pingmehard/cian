@@ -41,7 +41,7 @@ def proceed_specified_flats(main_link = None):
     options.add_argument("--disable-dev-shm-usage")
 
     driver = webdriver.Remote(
-        command_executor="http://127.0.0.1:4444/wd/hub",
+        command_executor="http://172.17.0.2:4444/wd/hub",
         options=options
    )
 
@@ -66,14 +66,17 @@ def proceed_specified_flats(main_link = None):
     time.sleep(2)
 
     # закрываем всплывающее окно
-    try:
-        driver.find_element(By.CLASS_NAME, '_2787e5dfdf--close--HPtsf').click()
-    except:
-        pass
+    # try:
+    #     driver.find_element(By.CLASS_NAME, '_2787e5dfdf--close--HPtsf').click()
+    # except:
+    #     pass
 
-    # ищем кнопку списка выведенных квартир
-    driver.find_element(By.CLASS_NAME, '_2787e5dfdf--listing-title--QQNrg').click()
-    time.sleep(2)
+    # try:
+    #     # ищем кнопку списка выведенных квартир
+    #     driver.find_element(By.CLASS_NAME, '_2787e5dfdf--listing-title--QQNrg').click()
+    #     time.sleep(2)
+    # except:
+    #     pass
 
     # кликаем пока не закончится список новых квартир
 
