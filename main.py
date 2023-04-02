@@ -94,23 +94,6 @@ def proceed_flats():
     driver.get(main_link)
     time.sleep(2)
 
-    # закрываем всплывающее окно
-    # try:
-    #     driver.find_element(By.CLASS_NAME, '_2787e5dfdf--close--HPtsf').click()
-    # except:
-    #     pass
-
-    # try:
-    #     # ищем кнопку списка выведенных квартир
-    #     driver.find_element(By.CLASS_NAME, '_2787e5dfdf--listing-title--QQNrg').click()
-    #     time.sleep(2)
-    # except:
-    #     # ищем кнопку списка выведенных квартир
-    #     driver.find_element(By.CLASS_NAME, '_2787e5dfdf--listing-title--QQNrg').click()
-    #     time.sleep(2)
-
-    # кликаем пока не закончится список новых квартир
-
     while True:
         for i in range(3):
             ActionChains(driver).key_down(Keys.END).perform()
