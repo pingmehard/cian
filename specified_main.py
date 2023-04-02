@@ -52,6 +52,7 @@ def proceed_specified_flats(main_link = None):
 
         offer_links = [offer['Link'] for offer in backup_offers]
     except:
+        offer_links = []
         print('Нет файла дампа загрузки, начинается новая процедура сохранения')
     
     # Парсер начинает загрузку квартир
