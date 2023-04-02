@@ -6,7 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup as BS
 
 
-def get_flat_info(page_feed):
+def get_flat_info(page_feed, offers_load_status, offer_links):
     '''
     Получаем список квартир на странице со всеми объектами
     Достаем из карточек страницы нужную инфу
@@ -21,9 +21,15 @@ def get_flat_info(page_feed):
 
         offer['Link'] = flat.find('a')['href']
         offer['Price'] = flat.find('span', attrs={"data-mark":"MainPrice"}).text
-        offer['Gallery'] = [i['src'] for i in flat.find_all('img') if ".jpg" in i['src']]
+        offer['Images'] = [i['src'] for i in flat.find_all('img') if ".jpg" in i['src']]
+
+        # проверяем загружалась ли эта квартира уже в бэкап
+        if offers_load_status:
+            if offer['Link'] in offer_links:
+                continue
 
         offers += [offer]
+        
         offer = {}
 
     return offers
@@ -44,23 +50,26 @@ def next_page(driver, main_link, last_page):
 
     return last_page + 1        
 
-def proceed(driver, main_link):
+def proceed(driver, main_link, offers_load_status, offer_links):
 
     last_page = 1
-    first_page_link = driver.current_url
     driver.get(main_link)
+    page_feed = BS(driver.page_source, 'lxml')
+
+    first_flat_link = page_feed.find('div', class_ = '_93444fe79c--wrapper--W0WqH').find('a')['href']
+
     offers = []
 
     while True:
 
-        proceed_page_scrolling(driver)
-        page_feed = BS(driver.page_source, 'lxml')
+        proceed_page_scrolling(driver)        
 
-        offers += get_flat_info(page_feed)
+        offers += get_flat_info(page_feed, offers_load_status, offer_links)
         
         last_page = next_page(driver, main_link, last_page)
+        page_feed = BS(driver.page_source, 'lxml')
 
-        if first_page_link == driver.current_url:
+        if first_flat_link == page_feed.find('div', class_ = '_93444fe79c--wrapper--W0WqH').find('a')['href']:
             break
 
     return offers

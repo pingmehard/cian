@@ -16,6 +16,7 @@ from tensorflow.keras.models import load_model
 import numpy as np
 
 import utils
+import parser_utils
 
 
 
@@ -90,50 +91,13 @@ def proceed_flats():
     except:
         print('Нет файла дампа загрузки, начинается новая процедура сохранения')
 
-    # открываем циан
-    driver.get(main_link)
-    time.sleep(2)
-
-    while True:
-        for i in range(3):
-            ActionChains(driver).key_down(Keys.END).perform()
-            time.sleep(.5)
-
-        driver.find_element(By.CLASS_NAME, "c29edcec40--container--HMnac").find_element(By.CLASS_NAME, "c29edcec40--button--Cp1dl").click()
-
-        buttons = driver.find_element(By.CLASS_NAME, "c29edcec40--container--HMnac").find_elements(By.CLASS_NAME, "c29edcec40--button--Cp1dl")
-        if len(buttons) == 1:
-            break
-
-        time.sleep(3)
-
-    # забраем данные по всем квартирам из списка офферов
-    feed = BS(driver.page_source, 'lxml')
-    all_cards = feed.find('div', class_ = 'c29edcec40--container--btZzs').find_all('section', attrs={"data-name":"CardContainer"})
-
-    offers = []
-
-    for i in all_cards:
-
-        offer = {}
-
-        # записываем атрибуты оффера из списка на циан
-        offer["Price"] = i.find('div', attrs={"data-name":"OfferHeader"}).text
-        offer['Link'] = i.find('a')['href']
-
-        # проверяем загружалась ли эта квартира уже в бэкап
-        if offers_load_status:
-            if offer['Link'] in offer_links:
-                continue
-
-        # ищем все предпросмотры изображений
-        images = i.find('div', attrs={"data-name":"Gallery"}).find_all('img')
-        images_links = [img['src'] for img in images]
-
-        # сохраняем ссылки на изображения
-        offer['Images'] = images_links
-
-        offers += [offer]
+    # Парсер начинает загрузку квартир
+    offers = parser_utils.proceed(
+        driver=driver, 
+        main_link=main_link, 
+        offers_load_status=offers_load_status, 
+        offer_links=offer_links,
+        )
 
     driver.close()
 
