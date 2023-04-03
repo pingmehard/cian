@@ -11,8 +11,9 @@ driver = webdriver.Remote(
 options является обязательным компонентом для запуска сессии, в нем указывается что за драйвер будет использоваться
 
 3. Запустить докер контейнер для запуска мероприятий в коде python
-docker build . --no-cache -t bot-service:v100
-docker run bot-service:v100
+docker build . --no-cache -t cr.yandex/crpjrv1c2ub6r7g8kbrd/bot-service:v101
+docker run cr.yandex/crpjrv1c2ub6r7g8kbrd/bot-service:v101
+docker push cr.yandex/crpjrv1c2ub6r7g8kbrd/bot-service:v101
 
 docker run -d selenium/standalone-chrome:3.141.59-20210607
 

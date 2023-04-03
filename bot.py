@@ -42,7 +42,7 @@ def show_raw_flats(message):
         offers = pickle.load(f)
 
     filtered_offers = filter(lambda x: x['ViewedInBot'] == 0, offers)
-    modified_links = [cian_link + i['Link'] + '\n' for i in filtered_offers if i['Result'] == dict_convert[0]]
+    modified_links = [i['Link'] + '\n' for i in filtered_offers if i['Result'] == dict_convert[0]]
     send_links_with_timeout(modified_links)
 
     # Проставляем статус просмотра квартир
@@ -62,7 +62,7 @@ def show_specified_flats(message):
         specified_offers = pickle.load(f)
 
     filtered_offers = filter(lambda x: x['ViewedInBot'] == 0, specified_offers)
-    modified_links = [cian_link + i['Link'] + '\n' for i in filtered_offers]
+    modified_links = [i['Link'] + '\n' for i in filtered_offers]
     send_links_with_timeout(modified_links)
 
     # Проставляем статус просмотра квартир
@@ -81,7 +81,7 @@ def show_specified_flats(message):
         offers = pickle.load(f)
 
     filtered_offers = filter(lambda x: x['ViewedInBot'] == 0, offers)
-    modified_links = [cian_link + i['Link'] + '\n' for i in filtered_offers if i['Result'] == dict_convert[2]]
+    modified_links = [i['Link'] + '\n' for i in filtered_offers if i['Result'] == dict_convert[2]]
     send_links_with_timeout(modified_links)
 
     # Проставляем статус просмотра квартир
