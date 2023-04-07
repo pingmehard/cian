@@ -1,3 +1,4 @@
+import os
 import urllib.request
 import pickle
 import datetime
@@ -43,7 +44,7 @@ def proceed_specified_flats(main_link = None):
     # загружаем ссылки на дамп офферов из циан
     offers_load_status = False
 
-    try:
+    if "specified_offers.pickle" in os.listdir('./data/'):
         # open a file for binary writing
         with open('./data/specified_offers.pickle', 'rb') as f:
             # dump the data to the file
@@ -51,7 +52,7 @@ def proceed_specified_flats(main_link = None):
             offers_load_status = True
 
         offer_links = [offer['Link'] for offer in backup_offers]
-    except:
+    else:
         offer_links = []
         print('Нет файла дампа загрузки, начинается новая процедура сохранения')
     

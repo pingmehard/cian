@@ -1,3 +1,4 @@
+import os
 import datetime
 import time
 import pickle
@@ -74,7 +75,7 @@ def show_specified_flats(message):
 
 
 @bot.message_handler(commands=["show_cool"])
-def show_specified_flats(message):
+def show_cool(message):
 
     with open('./data/offers.pickle', 'rb') as f:
         # dump the data to the file
@@ -91,6 +92,14 @@ def show_specified_flats(message):
     with open('./data/offers.pickle', 'wb') as f:
         pickle.dump(offers, f, protocol=pickle.HIGHEST_PROTOCOL)
 
+@bot.message_handler(commands=["set_link"])
+def set_link(message):
+
+    specified_link = message.text.split()[1]
+
+    with open('specified_link.pickle', 'wb') as f:
+        pickle.dump(specified_link, f)
+
 
 def scheduler():
     while True:
@@ -100,7 +109,16 @@ def scheduler():
 
 def scheduler_specified():
     while True:
-        offers_quantity = specified_main.proceed_specified_flats()
+
+        time.sleep(15)
+
+        if 'specified_link.pickle' in os.listdir('./'):
+            with open('specified_link.pickle', 'rb') as f:
+                specified_link = pickle.load(f)
+        else:
+            specified_link = None
+
+        offers_quantity = specified_main.proceed_specified_flats(main_link=specified_link)
         bot.send_message("@cian_news", text = f"Загружено {offers_quantity}. Выгрузить новые квартиры можно командой /show_specified")
         time.sleep(60 * 60)
 
