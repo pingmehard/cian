@@ -34,10 +34,13 @@ def proceed_specified_flats(main_link = None):
     options.add_argument("--window-size=1000,1000")
     options.add_argument("--disable-dev-shm-usage")
 
-    driver = webdriver.Remote(
-        command_executor="http://172.17.0.2:4444/wd/hub",
-        options=options
-   )
+    try:
+        driver = webdriver.Remote(
+            command_executor="http://172.17.0.2:4444/wd/hub",
+            options=options
+    )
+    except:
+        driver = webdriver.Chrome("./webdriver/chromedriver", options=options)
 
     # driver = webdriver.Chrome("./webdriver/chromedriver", options=options)
 
