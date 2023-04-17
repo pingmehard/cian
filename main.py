@@ -70,7 +70,8 @@ def proceed_flats():
 
     try:
         driver = webdriver.Remote(
-            command_executor="http://172.17.0.2:4444/wd/hub",
+            # command_executor="http://172.17.0.2:4444/wd/hub",
+            "https://bbaqq9a90l0ruq1bnal6.containers.yandexcloud.net/wd/hub",
             options=options
     )
     except:
