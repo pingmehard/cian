@@ -2,6 +2,7 @@ import os
 import urllib.request
 import pickle
 import datetime
+import platform
 
 from selenium import webdriver
 
@@ -34,15 +35,16 @@ def proceed_specified_flats(main_link = None):
     options.add_argument("--window-size=1000,1000")
     options.add_argument("--disable-dev-shm-usage")
 
-    try:
-        driver = webdriver.Remote(
-            command_executor="http://172.17.0.2:4444/wd/hub",
-            options=options
-    )
-    except:
+    # try:
+    #     driver = webdriver.Remote(
+    #         command_executor="http://172.17.0.2:4444/wd/hub",
+    #         options=options
+    # )
+    # except:
+    if platform.system() == 'Linux':
         driver = webdriver.Chrome("./webdriver/chromedriver", options=options)
-
-    # driver = webdriver.Chrome("./webdriver/chromedriver", options=options)
+    elif platform.system() == 'Windows':
+        driver = webdriver.Chrome("./webdriver/chromedriver.exe", options=options)
 
     # загружаем ссылки на дамп офферов из циан
     offers_load_status = False
