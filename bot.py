@@ -87,7 +87,8 @@ def show_cool(message):
 
     # Проставляем статус просмотра квартир
     for i in offers:
-        i['ViewedInBot'] = 1
+        if i['Result'] == dict_convert[2]:
+            i['ViewedInBot'] = 1
 
     with open('./data/offers.pickle', 'wb') as f:
         pickle.dump(offers, f, protocol=pickle.HIGHEST_PROTOCOL)
