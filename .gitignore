@@ -5,4 +5,4 @@ __pycache__/
 .ipynb_checkpoints/
 saved_models/
 test*.*
-# /data/*.pickle
+/data/*.pickle
