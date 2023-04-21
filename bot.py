@@ -19,6 +19,7 @@ with open("config.json", "r") as f:
 dict_convert = config['dict_convert']
 cian_link = config['cian_link']
 group_name = config['group_name']
+specified_link = config['specified_link']
 
 bot = telebot.TeleBot(token)
 
@@ -36,6 +37,7 @@ def send_links_with_timeout(iter_object, chat_id):
             time.sleep(60)
 
         time.sleep(.5)
+
 
 
 @bot.message_handler(commands=["show_raw"])
@@ -101,8 +103,12 @@ def set_link(message):
 
     specified_link = message.text.split()[1]
 
-    with open('specified_link.pickle', 'wb') as f:
-        pickle.dump(specified_link, f)
+    # Добавляем новую ссылку для специализированных ЖК
+    with open("config.json", "r") as f:
+        config = json.load(f)
+    config['specified_link'] = specified_link
+    with open("config.json", "w") as f:
+        json.dump(config, f)
 
 # def scheduler_subscription():
 #     while True:
