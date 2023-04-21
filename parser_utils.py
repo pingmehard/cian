@@ -34,7 +34,7 @@ def get_flat_info(page_feed, offers_load_status, offer_links):
         
         offer = {}
 
-    print(f"Количество исключенных из выдачи квартир {len(offers)}")
+    print(f"Количество исключенных из выдачи квартир {len(all_page_cards)-len(offers)}")
 
     return offers
 
