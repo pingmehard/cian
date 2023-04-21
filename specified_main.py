@@ -16,7 +16,13 @@ import parser_utils
 with open("config.json", "r") as f:
     config = json.load(f)
 
-dict_convert = config['dict_convert']
+# dict_convert = config['dict_convert']
+dict_convert = {
+    0: 'remont edition',
+    1: 'neponal nah',
+    2: 'babka edition',
+    3: 'ebat` berem'
+    }
 
 
 
@@ -43,10 +49,8 @@ def proceed_specified_flats(main_link = None):
     # загружаем ссылки на дамп офферов из циан
     offers_load_status = False
 
-    if "specified_offers.pickle" in os.listdir('./data/'):
-        # open a file for binary writing
-        with open('./data/specified_offers.pickle', 'rb') as f:
-            # dump the data to the file
+    if "specified_offers.pickle" in os.listdir(config['offers']):
+        with open(config['offers'] + 'specified_offers.pickle', 'rb') as f:
             backup_offers = pickle.load(f)
             offers_load_status = True
 
@@ -73,7 +77,7 @@ def proceed_specified_flats(main_link = None):
         # создаем вектор изображения и добавляем в список
         for image_link in offer['Images']:
 
-            image_name = f"./cian_images/{image_link.split('/')[-1]}"
+            image_name = config['cian_images_catalogue'] + f"{image_link.split('/')[-1]}"
 
             try:
                 urllib.request.urlretrieve(image_link, image_name)
@@ -92,14 +96,16 @@ def proceed_specified_flats(main_link = None):
     # если бэкап уже был, то добавляем к бэкапу новые загруженные квартиры
     if offers_load_status:
         backup_offers += offers
-        with open('./data/specified_offers.pickle', 'wb') as f:
+        with open(config['offers'] + 'specified_offers.pickle', 'wb') as f:
             pickle.dump(backup_offers, f, protocol=pickle.HIGHEST_PROTOCOL)
     else:
         # иначе сохраняем первые офферы квартир
-        with open('./data/specified_offers.pickle', 'wb') as f:
+        with open(config['offers'] + 'specified_offers.pickle', 'wb') as f:
             pickle.dump(offers, f, protocol=pickle.HIGHEST_PROTOCOL)
 
     return len(offers)
+
+
 
 if __name__ == '__main__':
     proceed_specified_flats()

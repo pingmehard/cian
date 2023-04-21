@@ -24,7 +24,13 @@ import parser_utils
 with open("config.json", "r") as f:
     config = json.load(f)
 
-dict_convert = config['dict_convert']
+# dict_convert = config['dict_convert']
+dict_convert = {
+    0: 'remont edition',
+    1: 'neponal nah',
+    2: 'babka edition',
+    3: 'ebat` berem'
+    }
 main_link = config['main_link']
 model_path = config['model_path']
 model_path_additional = config['model_path_additional']

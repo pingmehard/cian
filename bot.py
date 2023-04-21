@@ -4,19 +4,29 @@ from threading import Thread
 import json
 
 import telebot
+import pytomlpp
 
 from creds import token
 import main
 import specified_main
 
 
+# with open("config.toml", "r") as f:
+#     config = pytomlpp.load(f)
+
 # configs and several default vars
 with open("config.json", "r") as f:
     config = json.load(f)
 
-dict_convert = config['dict_convert']
+# dict_convert = config['dict_convert']
+dict_convert = {
+    0: 'remont edition',
+    1: 'neponal nah',
+    2: 'babka edition',
+    3: 'ebat` berem'
+    }
 cian_link = config['cian_link']
-group_name = config['group_name']
+group_name = config['dev_group_name'] if config['dev_mode'] else config['group_name']
 specified_link = config['specified_link']
 
 bot = telebot.TeleBot(token)
