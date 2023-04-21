@@ -17,6 +17,8 @@ def get_flat_info(page_feed, offers_load_status, offer_links):
     offer = {}
     offers = []
 
+    print(f"Количество загруженных квартир из Циан {len(all_page_cards)}")
+
     for flat in all_page_cards:
 
         offer['Link'] = flat.find('a')['href']
@@ -31,6 +33,8 @@ def get_flat_info(page_feed, offers_load_status, offer_links):
         offers += [offer]
         
         offer = {}
+
+    print(f"Количество исключенных из выдачи квартир {len(offers)}")
 
     return offers
 
