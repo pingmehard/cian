@@ -4,15 +4,10 @@ from threading import Thread
 import json
 
 import telebot
-import pytomlpp
 
 from creds import token
 import main
 import specified_main
-
-
-# with open("config.toml", "r") as f:
-#     config = pytomlpp.load(f)
 
 # configs and several default vars
 with open("config.json", "r") as f:
@@ -25,6 +20,7 @@ dict_convert = {
     2: 'babka edition',
     3: 'ebat` berem'
     }
+
 cian_link = config['cian_link']
 group_name = config['dev_group_name'] if config['dev_mode'] else config['group_name']
 specified_link = config['specified_link']
