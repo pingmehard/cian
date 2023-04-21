@@ -75,6 +75,7 @@ def proceed_flats():
     options.add_argument("--disable-gpu")
     options.add_argument("--window-size=600,1000")
     options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--headless")
 
     # try:
     #     driver = webdriver.Remote(
