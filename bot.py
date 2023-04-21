@@ -98,12 +98,13 @@ def show_cool(message):
     with open(config['offers'] + 'offers.pickle', 'wb') as f:
         pickle.dump(offers, f, protocol=pickle.HIGHEST_PROTOCOL)
 
+
 @bot.message_handler(commands=["set_link"])
 def set_link(message):
 
     specified_link = message.text.split()[1]
 
-    # Добавляем новую ссылку для специализированных ЖК
+    # adding new link for specialized living complex
     with open("config.json", "r") as f:
         config = json.load(f)
     config['specified_link'] = specified_link
@@ -123,6 +124,7 @@ def set_link(message):
 
 #         time.sleep(10*60)
 
+
 def scheduler():
     while True:
         offers_quantity = main.proceed_flats()
@@ -135,6 +137,7 @@ def scheduler():
 
             filtered_offers = filter(lambda x: x['ViewedInBot'] == 0, offers)
             modified_links = [i['Link'] + '\n' for i in filtered_offers if i['Result'] == dict_convert[2]]
+
             if not config['dev_mode']:
                 print('Выгружаем новые классные квартиры во вторую группу')
                 send_links_with_timeout(modified_links, chat_id="@flats_c_beta")
@@ -147,16 +150,17 @@ def scheduler_specified():
 
         time.sleep(15)
 
-        if 'specified_link.pickle' in os.listdir('./'):
-            with open('specified_link.pickle', 'rb') as f:
-                specified_link = pickle.load(f)
-        else:
-            specified_link = None
+        # for specified link update
+        with open("config.json", "r") as f:
+            config = json.load(f)
 
-        offers_quantity = specified_main.proceed_specified_flats(main_link=specified_link)
+        offers_quantity = specified_main.proceed_specified_flats(main_link=config['specified_link'])
+
         if offers_quantity > 0:
             bot.send_message(group_name, text = f"Загружено {offers_quantity}. Выгрузить новые квартиры можно командой /show_specified")
+
         time.sleep(60 * 60)
+
 
 thread1 = Thread(target=bot.infinity_polling)
 thread2 = Thread(target=scheduler)
