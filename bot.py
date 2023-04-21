@@ -1,5 +1,3 @@
-import os
-import datetime
 import time
 import pickle
 from threading import Thread
