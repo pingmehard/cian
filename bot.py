@@ -44,14 +44,13 @@ def send_links_with_timeout(iter_object, chat_id):
 def show_raw_flats(message):
 
     with open(config['offers'] + 'offers.pickle', 'rb') as f:
-        # dump the data to the file
         offers = pickle.load(f)
 
     filtered_offers = filter(lambda x: x['ViewedInBot'] == 0, offers)
     modified_links = [i['Link'] + '\n' for i in filtered_offers if i['Result'] == dict_convert[0]]
     send_links_with_timeout(modified_links, chat_id = group_name)
 
-    # Проставляем статус просмотра квартир
+    # set viewed status for flats
     for i in offers:
         if i['Result'] == dict_convert[0]:
             i['ViewedInBot'] = 1
@@ -83,14 +82,13 @@ def show_specified_flats(message):
 def show_cool(message):
 
     with open(config['offers'] + 'offers.pickle', 'rb') as f:
-        # dump the data to the file
         offers = pickle.load(f)
 
     filtered_offers = filter(lambda x: x['ViewedInBot'] == 0, offers)
     modified_links = [i['Link'] + '\n' for i in filtered_offers if i['Result'] == dict_convert[2]]
     send_links_with_timeout(modified_links, chat_id = group_name)
 
-    # Проставляем статус просмотра квартир
+    # set flats status 
     for i in offers:
         if i['Result'] == dict_convert[2]:
             i['ViewedInBot'] = 1
