@@ -24,6 +24,7 @@ def get_flat_info(page_feed, offers_load_status, offer_links):
         offer['Link'] = flat.find('a')['href']
         offer['Price'] = flat.find('span', attrs={"data-mark":"MainPrice"}).text
         offer['Images'] = [i['src'] for i in flat.find_all('img') if ".jpg" in i['src']]
+        offer['Description'] = flat.find('div', attrs={"data-name":"Description"}).text
 
         # проверяем загружалась ли эта квартира уже в бэкап
         if offers_load_status:
