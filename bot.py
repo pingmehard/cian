@@ -131,7 +131,7 @@ def scheduler():
                 send_links_with_timeout(modified_links, chat_id="@flats_c_beta")
                 print("Квартиры выгружены")
 
-        time.sleep(60 * 60)
+        time.sleep(config['main_update_every_seconds'])
 
 def scheduler_specified():
     while True:
@@ -147,7 +147,7 @@ def scheduler_specified():
         if offers_quantity > 0:
             bot.send_message(group_name, text = f"Загружено {offers_quantity}. Выгрузить новые квартиры можно командой /show_specified")
 
-        time.sleep(60 * 60)
+        time.sleep(config['specified_update_every_seconds'])
 
 
 thread1 = Thread(target=bot.infinity_polling)
