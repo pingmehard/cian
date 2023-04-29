@@ -63,15 +63,16 @@ def get_flat_info(page_feed, offers_load_status, offer_links):
 
     for flat in all_page_cards:
 
+        offer['Link'] = flat.find('a')['href']
+
         # проверяем загружалась ли эта квартира уже в бэкап
         if offers_load_status:
             if offer['Link'] in offer_links:
                 continue
-
-        offer['Link'] = flat.find('a')['href']
+        
         offer['Price'] = flat.find('span', attrs={"data-mark":"MainPrice"}).text
         offer['Images'] = [i['src'] for i in flat.find_all('img') if ".jpg" in i['src']]
-        offer['FirstHistoryDate'] = get_offer_create_date(offer['Link'])
+        offer['FirstHistoryDate'] = get_offer_create_date(flat.find('a')['href'])
 
         offers += [offer]
         
