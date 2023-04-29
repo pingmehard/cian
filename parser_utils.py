@@ -1,51 +1,46 @@
+import platform
 import time
-import datetime
+import json
 
+from selenium import webdriver
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 
 from bs4 import BeautifulSoup as BS
 
 
-month_map = {
-    "янв" : "01",
-    "фев" : "02",
-    "мар" : "03",
-    "апр" : "04",
-    "май" : "05",
-    "июн" : "06",
-    "июл" : "07",
-    "авг" : "08",
-    "сен" : "09",
-    "окт" : "10",
-    "ноя" : "11",
-    "дек" : "12",
-}
+# configs and several default vars
+with open("config.json", "r") as f:
+    config = json.load(f)
 
 
 
-def get_offer_create_date(driver, offer_link):
+def get_offer_create_date(offer_link):
+
+    # adding options to chrome
+    options = webdriver.ChromeOptions()
+    for option in config['main_chrome_options']:
+        options.add_argument(option)
 
     # откарываем карточку квартиры
+    driver = webdriver.Chrome(config['chrome_web_driver'][platform.system()], options=options)
+
     driver.get(offer_link)
-    page_feed = BS(driver.page_source, 'lxml')
-    # Находим класс всплывашки история цены, затем находим все указанные в ней цены и берем последнюю, так как она и самая первая цена
-    first_price = page_feed.find('div', class_ = "a10a3f92e9--container--y2J5W").find_all('tr', class_ = "a10a3f92e9--history-event--xUQ_P")[-1]
-    # получаем первую дату из текста
-    first_date = first_price.find('td', class_ = "a10a3f92e9--event-date--BvijC").text
-
-    splitted_first_date = first_date.split()
+    time.sleep(.5)
     try:
-        day = int(splitted_first_date[0])
-        month = int(month_map[splitted_first_date[1]])
-        year = int(splitted_first_date[2])
+        driver.find_element('xpath', '//a[@data-name="Link"]').click()
     except:
-        return ''
+        try:
+            driver.find_element('xpath', '//button[@data-name="OfferStats"]').click()
+        except:
+            driver.find_element('xpath', '//button[@data-name="OfferMeta"]').click()
 
-    # first_date_pythonic = datetime.date(year, month, day)
-    # return first_date_pythonic
-
-    return ".".join([year, month, day])
+    time.sleep(.2)
+    page_feed = BS(driver.page_source, 'lxml')
+    creation_date = page_feed.find('div', class_ = "a10a3f92e9--information--JQbJ6").find('div').text.split()[-1]
+    print(creation_date)
+    return creation_date
 
 
 def get_flat_info(page_feed, offers_load_status, offer_links):
@@ -72,7 +67,11 @@ def get_flat_info(page_feed, offers_load_status, offer_links):
         
         offer['Price'] = flat.find('span', attrs={"data-mark":"MainPrice"}).text
         offer['Images'] = [i['src'] for i in flat.find_all('img') if ".jpg" in i['src']]
-        offer['FirstHistoryDate'] = get_offer_create_date(flat.find('a')['href'])
+        try:
+            offer['FirstHistoryDate'] = get_offer_create_date(flat.find('a')['href'])
+        except Exception as e:
+            print(e)
+            print(offer['Link'])
 
         offers += [offer]
         
