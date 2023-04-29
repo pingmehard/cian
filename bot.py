@@ -113,20 +113,6 @@ def set_link(message):
     with open("config.json", "w") as f:
         json.dump(config, f)
 
-# def scheduler_subscription():
-#     while True:
-#         with open('./data/offers.pickle', 'rb') as f:
-#             # dump the data to the file
-#             offers = pickle.load(f)
-
-#         filtered_offers = filter(lambda x: x['ViewedInBot'] == 0, offers)
-#         modified_links = [i['Link'] + '\n' for i in filtered_offers if i['Result'] == dict_convert[2]]
-#         print('Выгружаем новые классные квартиры во вторую группу')
-#         send_links_with_timeout(modified_links, chat_id="@flats_c_beta")
-
-#         time.sleep(10*60)
-
-
 def scheduler():
     while True:
         offers_quantity = main.proceed_flats()
@@ -145,7 +131,7 @@ def scheduler():
                 send_links_with_timeout(modified_links, chat_id="@flats_c_beta")
                 print("Квартиры выгружены")
 
-        time.sleep(3 * 60 * 60)
+        time.sleep(60 * 60)
 
 def scheduler_specified():
     while True:
@@ -167,9 +153,7 @@ def scheduler_specified():
 thread1 = Thread(target=bot.infinity_polling)
 thread2 = Thread(target=scheduler)
 thread3 = Thread(target=scheduler_specified)
-# thread4 = Thread(target=scheduler_subscription)
 
 thread1.start()
 thread2.start()
 thread3.start()
-# thread4.start()
