@@ -78,6 +78,7 @@ def get_flat_info(page_feed, offers_load_status, offer_links):
         except Exception as e:
             print(e)
             print(offer['Link'])
+            offer['FirstHistoryDate'] = get_offer_create_date(flat.find('a')['href'])
 
         offers += [offer]
         
