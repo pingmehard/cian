@@ -25,13 +25,20 @@ def proceed_page_scrolling(driver):
 
 def get_house_info(page_feed):
 
-    # получаем всю информацию о доме, берем правую колонку, выгружаем все строки из нее
-    about_house = page_feed.find_all('div', attrs={"data-name" : "OfferSummaryInfoGroup"})[-1].find_all('div', attrs={"data-name" : "OfferSummaryInfoItem"})
+    try:
+        # получаем всю информацию о доме, берем правую колонку, выгружаем все строки из нее
+        about_house = page_feed.find_all('div', attrs={"data-name" : "OfferSummaryInfoGroup"})[-1].find_all('div', attrs={"data-name" : "OfferSummaryInfoItem"})
 
-    # для каждой строки данных получаем текст и заполняем список
-    about_house_info = []
-    for i in about_house:
-        about_house_info += [[elem.text for elem in i.find_all('p')]]
+        # для каждой строки данных получаем текст и заполняем список
+        about_house_info = []
+        for i in about_house:
+            about_house_info += [[elem.text for elem in i.find_all('p')]]
+    except: # в случае, когда карточка квартиры заполняется данными из БТИ
+        # ищем выписку из БТИ от Циан, затем ищем все элементы описания по аналогии с обычным поиском
+        about_house_bti = page_feed.find('div', attrs={'data-name':'BtiHouseData'}).find_all('div', attrs={'data-name':'Item'})
+        about_house_info = []
+        for i in about_house_bti:
+            about_house_info += [[elem.text for elem in i.find_all('div')]]
 
     print(about_house_info) if config['dev_mode'] else None
     # отдаем словарь элементов

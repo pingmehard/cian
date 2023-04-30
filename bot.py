@@ -42,6 +42,18 @@ def send_links_with_timeout(iter_object, chat_id):
 
         time.sleep(.5)
 
+def construct_message(offers):
+
+    text = ''
+    texts = []
+    for off in offers:
+        text += 'Первая дата публикации: ' + off.get('FirstHistoryDate', '-') + '\n'
+        text += 'Тип дома: ' + off.get('HouseInfo', '-').get('Тип дома', '-') + '\n'
+        text += off['Link'] + '\n'
+        texts += [text]
+        text = ''
+
+    return texts
 
 
 @bot.message_handler(commands=["show_raw"])
@@ -88,8 +100,8 @@ def show_cool(message):
     with open(config['offers'] + 'offers.pickle', 'rb') as f:
         offers = pickle.load(f)
 
-    filtered_offers = filter(lambda x: x['ViewedInBot'] == 0, offers)
-    modified_links = ['Первая дата публикации: ' + i['FirstHistoryDate'] if 'FirstHistoryDate' in i else '-' + '\n' + i['Link'] + '\n' for i in filtered_offers if i['Result'] == dict_convert[2]]
+    filtered_offers = filter(lambda x: x['ViewedInBot'] == 0 and x['Result'] == dict_convert[2], offers)
+    modified_links = construct_message(filtered_offers)
     send_links_with_timeout(modified_links, chat_id = group_name)
 
     # set flats status 
