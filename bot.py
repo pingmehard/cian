@@ -51,8 +51,11 @@ def construct_message(offers):
     text = ''
     texts = []
     for off in offers:
-        text += 'Первая дата публикации: ' + off.get('FirstHistoryDate', '-') + '\n'
-        text += 'Тип дома: ' + off.get('HouseInfo', '-').get('Тип дома', '-') + '\n'
+        if 'FirstHistoryDate' in off:
+            text += 'Первая дата публикации: ' + str(off['FirstHistoryDate']) + '\n'
+        if 'HouseInfo' in off:
+            if off['HouseInfo']:
+                text += 'Тип дома: ' + str(off['HouseInfo'].get('Тип дома', '-')) + '\n'
         text += off['Link'] + '\n'
         texts += [text]
         text = ''
