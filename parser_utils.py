@@ -26,52 +26,58 @@ def proceed_page_scrolling(driver):
 def get_house_info(page_feed):
 
     try:
-        # получаем всю информацию о доме, берем правую колонку, выгружаем все строки из нее
-        about_house = page_feed.find_all('div', attrs={"data-name" : "OfferSummaryInfoGroup"})[-1].find_all('div', attrs={"data-name" : "OfferSummaryInfoItem"})
+        try:
+            # получаем всю информацию о доме, берем правую колонку, выгружаем все строки из нее
+            about_house = page_feed.find_all('div', attrs={"data-name" : "OfferSummaryInfoGroup"})[-1].find_all('div', attrs={"data-name" : "OfferSummaryInfoItem"})
 
-        # для каждой строки данных получаем текст и заполняем список
-        about_house_info = []
-        for i in about_house:
-            about_house_info += [[elem.text for elem in i.find_all('p')]]
-    except: # в случае, когда карточка квартиры заполняется данными из БТИ
-        # ищем выписку из БТИ от Циан, затем ищем все элементы описания по аналогии с обычным поиском
-        about_house_bti = page_feed.find('div', attrs={'data-name':'BtiHouseData'}).find_all('div', attrs={'data-name':'Item'})
-        about_house_info = []
-        for i in about_house_bti:
-            about_house_info += [[elem.text for elem in i.find_all('div')]]
+            # для каждой строки данных получаем текст и заполняем список
+            about_house_info = []
+            for i in about_house:
+                about_house_info += [[elem.text for elem in i.find_all('p')]]
+        except: # в случае, когда карточка квартиры заполняется данными из БТИ
+            # ищем выписку из БТИ от Циан, затем ищем все элементы описания по аналогии с обычным поиском
+            about_house_bti = page_feed.find('div', attrs={'data-name':'BtiHouseData'}).find_all('div', attrs={'data-name':'Item'})
+            about_house_info = []
+            for i in about_house_bti:
+                about_house_info += [[elem.text for elem in i.find_all('div')]]
 
-    print(about_house_info) if config['dev_mode'] else None
-    # отдаем словарь элементов
-    return dict(about_house_info)
+        print(about_house_info) if config['dev_mode'] else None
+        # отдаем словарь элементов
+        return dict(about_house_info)
+    except:
+        return None
 
 def get_offer_info(offer_link):
 
-    # adding options to chrome
-    options = webdriver.ChromeOptions()
-    for option in config['specified_chrome_options']:
-        options.add_argument(option)
-
-    # откарываем карточку квартиры
-    driver = webdriver.Chrome(config['chrome_web_driver'][platform.system()], options=options)
-
-    driver.get(offer_link)
-
     try:
-        driver.find_element('xpath', '//div[@data-name="OfferStats"]').click()
+        # adding options to chrome
+        options = webdriver.ChromeOptions()
+        for option in config['specified_chrome_options']:
+            options.add_argument(option)
+
+        # откарываем карточку квартиры
+        driver = webdriver.Chrome(config['chrome_web_driver'][platform.system()], options=options)
+
+        driver.get(offer_link)
+
+        try:
+            driver.find_element('xpath', '//div[@data-name="OfferStats"]').click()
+        except:
+            driver.find_element('xpath', '//button[@data-name="OfferStats"]').click()
+
+        time.sleep(.2)
+        page_feed = BS(driver.page_source, 'lxml')
+
+        # получаем данные о доме
+        house_info = get_house_info(page_feed)
+
+        driver.close()
+
+        creation_date = page_feed.find('div', class_ = "a10a3f92e9--information--JQbJ6").find('div').text.split()[-1]
+        print(creation_date) if config['dev_mode'] else None
+        return creation_date, house_info
     except:
-        driver.find_element('xpath', '//button[@data-name="OfferStats"]').click()
-
-    time.sleep(.2)
-    page_feed = BS(driver.page_source, 'lxml')
-
-    # получаем данные о доме
-    house_info = get_house_info(page_feed)
-
-    driver.close()
-
-    creation_date = page_feed.find('div', class_ = "a10a3f92e9--information--JQbJ6").find('div').text.split()[-1]
-    print(creation_date) if config['dev_mode'] else None
-    return creation_date, house_info
+        return None, None
 
 
 def get_flat_info(page_feed, offers_load_status, offer_links):
@@ -98,12 +104,7 @@ def get_flat_info(page_feed, offers_load_status, offer_links):
         
         offer['Price'] = flat.find('span', attrs={"data-mark":"MainPrice"}).text
         offer['Images'] = [i['src'] for i in flat.find_all('img') if ".jpg" in i['src']]
-        try:
-            offer['FirstHistoryDate'], offer['HouseInfo'] = get_offer_info(flat.find('a')['href'])
-        except Exception as e:
-            print(e)
-            print(offer['Link'])
-            offer['FirstHistoryDate'], offer['HouseInfo'] = get_offer_info(flat.find('a')['href'])
+        offer['FirstHistoryDate'], offer['HouseInfo'] = get_offer_info(flat.find('a')['href'])
 
         offers += [offer]
         offer = {}

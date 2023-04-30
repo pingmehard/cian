@@ -44,6 +44,10 @@ def send_links_with_timeout(iter_object, chat_id):
 
 def construct_message(offers):
 
+    '''
+    Делает текстовое сообщение для вывода квартиры из словаря сохраненных данных
+    '''
+
     text = ''
     texts = []
     for off in offers:
