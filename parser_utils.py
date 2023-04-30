@@ -16,28 +16,34 @@ with open("config.json", "r") as f:
 
 
 
+# Прокручиваем страницу вниз
+def proceed_page_scrolling(driver):
+
+    for i in range(3):
+        ActionChains(driver).key_down(Keys.END).perform()
+        time.sleep(.5)
+
 def get_offer_create_date(offer_link):
 
     # adding options to chrome
     options = webdriver.ChromeOptions()
-    for option in config['main_chrome_options']:
+    for option in config['specified_chrome_options']:
         options.add_argument(option)
 
     # откарываем карточку квартиры
     driver = webdriver.Chrome(config['chrome_web_driver'][platform.system()], options=options)
 
     driver.get(offer_link)
-    time.sleep(.5)
+
     try:
-        driver.find_element('xpath', '//a[@data-name="Link"]').click()
+        driver.find_element('xpath', '//div[@data-name="OfferStats"]').click()
     except:
-        try:
-            driver.find_element('xpath', '//button[@data-name="OfferStats"]').click()
-        except:
-            driver.find_element('xpath', '//button[@data-name="OfferMeta"]').click()
+        driver.find_element('xpath', '//button[@data-name="OfferStats"]').click()
 
     time.sleep(.2)
     page_feed = BS(driver.page_source, 'lxml')
+    driver.close()
+
     creation_date = page_feed.find('div', class_ = "a10a3f92e9--information--JQbJ6").find('div').text.split()[-1]
     print(creation_date)
     return creation_date
@@ -80,14 +86,6 @@ def get_flat_info(page_feed, offers_load_status, offer_links):
     print(f"Количество исключенных из выдачи квартир {len(all_page_cards)-len(offers)}")
 
     return offers
-
-# Прокручиваем страницу
-
-def proceed_page_scrolling(driver):
-
-    for i in range(3):
-        ActionChains(driver).key_down(Keys.END).perform()
-        time.sleep(.5)
 
 # Листаем страницы
 
