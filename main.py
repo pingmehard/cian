@@ -81,7 +81,7 @@ def proceed_flats(main_link = main_link, task_name = 'offers'):
     offers_load_status = False
 
     try:
-        with open(config['offers'] + '{task_name}.pickle', 'rb') as f:
+        with open(config['offers'] + f'{task_name}.pickle', 'rb') as f:
             backup_offers = pickle.load(f)
             offers_load_status = True
 
@@ -151,11 +151,11 @@ def proceed_flats(main_link = main_link, task_name = 'offers'):
     # если бэкап уже был, то добавляем к бэкапу новые загруженные квартиры
     if offers_load_status:
         backup_offers += offers
-        with open(config['offers'] + '{task_name}.pickle', 'wb') as f:
+        with open(config['offers'] + f'{task_name}.pickle', 'wb') as f:
             pickle.dump(backup_offers, f, protocol=pickle.HIGHEST_PROTOCOL)
     else:
         # иначе сохраняем первые офферы квартир
-        with open(config['offers'] + '{task_name}.pickle', 'wb') as f:
+        with open(config['offers'] + f'{task_name}.pickle', 'wb') as f:
             pickle.dump(offers, f, protocol=pickle.HIGHEST_PROTOCOL)
 
     return len(offers)

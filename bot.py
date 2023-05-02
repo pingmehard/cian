@@ -161,7 +161,7 @@ def scheduler_specified():
         with open("config.json", "r") as f:
             config = json.load(f)
 
-        offers_quantity = specified_main.proceed_specified_flats(main_link=config['specified_link'])
+        offers_quantity = main.proceed_flats(config['specified_link'], 'low_price_flats')
 
         if offers_quantity > 0:
             bot.send_message(group_name, text = f"Загружено {offers_quantity}. Выгрузить новые квартиры можно командой /show_specified")
