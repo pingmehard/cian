@@ -120,6 +120,25 @@ def show_cool(message):
         pickle.dump(offers, f, protocol=pickle.HIGHEST_PROTOCOL)
 
 
+@bot.message_handler(commands=["show_cool_specified"])
+def show_cool(message):
+
+    with open(config['offers'] + 'low_price_flats.pickle', 'rb') as f:
+       spec_cool_offers = pickle.load(f)
+
+    filtered_offers = filter(lambda x: x['ViewedInBot'] == 0 and x['Result'] == dict_convert[2], spec_cool_offers)
+    modified_links = construct_message(filtered_offers)
+    send_links_with_timeout(modified_links, chat_id = group_name)
+
+    # проставляем статус отправленных квартир в группу "просмотрено"
+    for i in spec_cool_offers:
+        if i['Result'] == dict_convert[2]:
+            i['ViewedInBot'] = 1
+    # сохраняем данные по просмотрам квартир
+    with open(config['offers'] + 'low_price_flats.pickle', 'wb') as f:
+        pickle.dump(spec_cool_offers, f, protocol=pickle.HIGHEST_PROTOCOL)
+
+
 @bot.message_handler(commands=["set_link"])
 def set_link(message):
 
@@ -157,10 +176,11 @@ def scheduler_specified():
 
         time.sleep(15)
 
-        # for specified link update
+        # в случае, когда ссылка обновлена через бота, следующая итерация запустится с новой ссылкой как бы бесшовно
         with open("config.json", "r") as f:
             config = json.load(f)
 
+        # запускаем основной процесс проверки квартир, устанавливаем ссылку для получения квартир и название для ссылки (используется в имени файла, в которои хранится вся информация про квартиры)
         offers_quantity = main.proceed_flats(config['specified_link'], 'low_price_flats')
 
         if offers_quantity > 0:
