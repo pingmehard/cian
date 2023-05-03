@@ -56,6 +56,9 @@ def construct_message(offers):
         if 'HouseInfo' in off:
             if off['HouseInfo']:
                 text += 'Тип дома: ' + str(off['HouseInfo'].get('Тип дома', '-')) + '\n'
+        if 'FlatSeller' in off:
+            if off['FlatSeller']:
+                text += 'Продавец: ' + str(off['FlatSeller']) + '\n'
         text += off['Link'] + '\n'
         texts += [text]
         text = ''
