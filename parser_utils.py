@@ -86,6 +86,7 @@ def get_flat_info(page_feed, offers_load_status, offer_links):
     Достаем из карточек страницы нужную инфу
     '''
 
+    # получаем все карточки квартир по карточке продавца
     all_page_cards = page_feed.find('div', class_ = "_93444fe79c--wrapper--W0WqH").find_all('article', attrs={"data-name":"CardComponent"})
 
     offer = {}
@@ -105,6 +106,7 @@ def get_flat_info(page_feed, offers_load_status, offer_links):
         offer['Price'] = flat.find('span', attrs={"data-mark":"MainPrice"}).text
         offer['Images'] = [i['src'] for i in flat.find_all('img') if ".jpg" in i['src']]
         offer['FirstHistoryDate'], offer['HouseInfo'] = get_offer_info(flat.find('a')['href'])
+        offer['FlatSeller'] = flat.find('div', attrs={'data-name':'BrandingLevelWrapper'}).find_all('span')[1].text
 
         offers += [offer]
         offer = {}
