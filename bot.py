@@ -121,7 +121,7 @@ def show_cool(message):
 
 
 @bot.message_handler(commands=["show_cool_specified"])
-def show_cool(message):
+def show_cool_specified(message):
 
     with open(config['offers'] + 'low_price_flats.pickle', 'rb') as f:
        spec_cool_offers = pickle.load(f)
@@ -184,7 +184,8 @@ def scheduler_specified():
         offers_quantity = main.proceed_flats(config['specified_link'], 'low_price_flats')
 
         if offers_quantity > 0:
-            bot.send_message(group_name, text = f"Загружено {offers_quantity}. Выгрузить новые квартиры можно командой /show_specified")
+            bot.send_message(group_name, text = f"Загружено {offers_quantity}. Выгрузить новые квартиры можно командой /show_specified\nили хорошие квартиры \
+                            командой /show_cool_specified")
 
         time.sleep(config['specified_update_every_seconds'])
 
