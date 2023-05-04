@@ -67,8 +67,8 @@ def proceed_flats(main_link = main_link, task_name = 'offers'):
 
     # adding options to chrome
     options = webdriver.ChromeOptions()
-    options.add_argument("--disable-javascript")
-    options.add_experimental_option( "prefs",{'profile.managed_default_content_settings.javascript': 2})
+    # options.add_argument("--disable-javascript")
+    # options.add_experimental_option( "prefs",{'profile.managed_default_content_settings.javascript': 2})
     for option in config['main_chrome_options']:
         options.add_argument(option)
 

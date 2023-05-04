@@ -9,6 +9,11 @@ from selenium.webdriver.common.keys import Keys
 
 from bs4 import BeautifulSoup as BS
 
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+
 
 # configs and several default vars
 with open("config.json", "r") as f:
@@ -50,17 +55,21 @@ def get_house_info(page_feed):
 def get_offer_info(offer_link):
 
     try:
+
+        capa = DesiredCapabilities.CHROME
+        capa["pageLoadStrategy"] = "none"
         # adding options to chrome
         options = webdriver.ChromeOptions()
-        options.add_argument("--disable-javascript")
-        options.add_experimental_option( "prefs",{'profile.managed_default_content_settings.javascript': 2})
+        # options.add_argument("--disable-javascript")
+        # options.add_experimental_option( "prefs",{'profile.managed_default_content_settings.javascript': 2})
         for option in config['specified_chrome_options']:
             options.add_argument(option)
 
         # откарываем карточку квартиры
-        driver = webdriver.Chrome(config['chrome_web_driver'][platform.system()], options=options)
-
+        driver = webdriver.Chrome(config['chrome_web_driver'][platform.system()], options=options, desired_capabilities=capa)
+        wait = WebDriverWait(driver, 5)
         driver.get(offer_link)
+        wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'a10a3f92e9--button--lyQVM')))
 
         try:
             driver.find_element('xpath', '//div[@data-name="OfferStats"]').click()
