@@ -86,6 +86,7 @@ def get_offer_info(offer_link):
 
         creation_date = page_feed.find('div', class_ = "a10a3f92e9--information--JQbJ6").find('div').text.split()[-1]
         print(creation_date) if config['dev_mode'] else None
+        driver.close()
         return creation_date, house_info
     except:
         return None, None
