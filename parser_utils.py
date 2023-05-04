@@ -52,6 +52,8 @@ def get_offer_info(offer_link):
     try:
         # adding options to chrome
         options = webdriver.ChromeOptions()
+        options.add_argument("--disable-javascript")
+        options.add_experimental_option( "prefs",{'profile.managed_default_content_settings.javascript': 2})
         for option in config['specified_chrome_options']:
             options.add_argument(option)
 
