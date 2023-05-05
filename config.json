@@ -1,6 +1,6 @@
 {
     "dev_mode": false,
-    "main_update_every_seconds": 3600,
+    "main_update_every_seconds": 36000,
     "specified_update_every_seconds": 2000,
     "model_path": "./saved_models/model_v4/",
     "model_path_additional": "./model_v3/",
