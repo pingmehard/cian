@@ -56,8 +56,8 @@ def get_offer_info(offer_link):
 
     try:
 
-        capa = DesiredCapabilities.CHROME
-        capa["pageLoadStrategy"] = "none"
+        # capa = DesiredCapabilities.CHROME
+        # capa["pageLoadStrategy"] = "none"
         # adding options to chrome
         options = webdriver.ChromeOptions()
         # options.add_argument("--disable-javascript")
@@ -66,10 +66,10 @@ def get_offer_info(offer_link):
             options.add_argument(option)
 
         # откарываем карточку квартиры
-        driver = webdriver.Chrome(config['chrome_web_driver'][platform.system()], options=options, desired_capabilities=capa)
-        wait = WebDriverWait(driver, 5)
+        driver = webdriver.Chrome(config['chrome_web_driver'][platform.system()], options=options)
+        # wait = WebDriverWait(driver, 5)
         driver.get(offer_link)
-        wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'a10a3f92e9--button--lyQVM')))
+        # wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'a10a3f92e9--button--lyQVM')))
 
         try:
             driver.find_element('xpath', '//div[@data-name="OfferStats"]').click()
